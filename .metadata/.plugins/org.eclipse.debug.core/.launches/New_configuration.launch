@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.boris.winrun4j.eclipse.launch">
+<stringAttribute key="dde.class" value="org.boris.winrun4j.test.Test"/>
+<booleanAttribute key="dde.enabled" value="true"/>
+<stringAttribute key="dde.server" value="DDETest.Server"/>
+<stringAttribute key="dde.topic" value="DDETest.Topic"/>
+<stringAttribute key="dde.window" value="DDETest.Window"/>
+<stringAttribute key="log" value=""/>
+<stringAttribute key="log.level" value=""/>
+<booleanAttribute key="log.overwrite" value="true"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/2048/src/Main.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="Main"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="2048"/>
+<stringAttribute key="process.priority" value=""/>
+<stringAttribute key="single.instance" value="dde"/>
+<booleanAttribute key="splash.autohide" value="true"/>
+<stringAttribute key="splash.image" value=""/>
+</launchConfiguration>

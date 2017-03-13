@@ -1,0 +1,462 @@
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+
+
+
+
+
+public class GameCore {
+	static Table temp;
+	static private boolean air;
+	static boolean Debug = false;
+	static List<Integer> list = new ArrayList<Integer>();
+	
+	static private Random random = new Random();
+	
+	
+	static void Spawn() //Spawns random number at random location
+	{
+			air=false;
+			for(int z = 0; z < 4; z++)
+			{
+				for(int f = 0; f < 4; f++)
+				{
+				if(Gui.numberGrid.grid[z][f] == 0)
+					{
+						air = true;
+						z=4;
+						break;
+					}
+					else
+					{
+						air = false;
+					}
+				}
+			}
+				if(!air)	//If there's no free space
+					{
+					return;
+					} 
+				
+				while(air)
+				{
+					int x = random.nextInt(4);
+					int y = random.nextInt(4);
+					if(Gui.numberGrid.grid[y][x] == 0)
+					{
+						if(random.nextInt(2)==0)
+							Gui.numberGrid.grid[y][x] = 2;
+						else
+							Gui.numberGrid.grid[y][x] = 4;	
+							
+						break;
+					}	
+				}
+				Gui.refreshGrid();
+				Gui.calcColors();
+	}
+	
+
+	
+	public static void Left() throws IOException
+	{
+		//Puts current grid array to temp one
+		temp = Gui.getGrid();
+
+		//toString method for later checking if grid has changed
+		String tString = Gui.numberGrid.toString();
+		
+		
+		
+		//iterates through 4 lines of grid
+		for(int i = 0; i<4; i++)
+		{
+			//Refreshes List
+			list = new ArrayList<Integer>();
+			
+			//Parse line of numbers to list
+			for(int z = 0; z<4; z++)
+			{
+				list.add(temp.grid[i][z]);
+			}	
+			
+			//Removes spaces
+			int l = list.size();
+			for(int z = 0; z<l; z++)
+			{
+				if(list.get(z).intValue() == 0)
+				{
+					list.remove(z);
+					z=-1;
+					l=list.size();
+				}
+			}
+
+			//Scans for doubling numbers
+			for(int e = 0; e < list.size()-1; e++)
+			{
+				int value = list.get(e).intValue();
+				if(value == list.get(e+1).intValue())
+				{
+					list.remove(e+1);
+					list.set(e, new Integer(value * 2));
+				}
+			}
+			//Checks if list size is 4, if not, makes 4	
+			if(list.size()<4)
+			{
+				//Finds out how many spaces are empty
+				int empty = 4 - list.size();
+				
+				//Adds amount of empty spaces 0 in list
+				for(int h = 0; h<empty ; h++)
+					list.add(new Integer(0));
+			}
+			
+			//Initialises temp array for parsing in *Table temp*
+			int[] intArray = new int[4];
+			
+			//Iterates through list and makes array
+			for(int z = 0; z<4; z++)
+			{
+				intArray[z] = list.get(z);
+			}
+			
+			//Parses line array to temp.grid[]
+			temp.grid[i] = intArray;
+		}
+		
+		//Checks if grid has changed
+		if(tString.equals(temp.toString()))
+		{
+			
+			//GameOver check
+			koCheck();
+		
+		}else{
+			
+		
+		Gui.parseGrid(temp);
+		Spawn();
+		}
+	}
+		
+	public static void Right() throws IOException
+	{
+		//Puts current grid array to temp one
+				temp = Gui.getGrid();
+
+				//toString method for later checking if grid has changed
+				String tString = Gui.numberGrid.toString();
+				
+				
+				//iterates through 4 lines of grid
+				for(int i = 0; i<4; i++)
+				{
+					//Refreshes List
+					list = new ArrayList<Integer>();
+					
+					//Parse line of numbers to list
+					for(int z = 3; z>-1; z--)
+					{
+						list.add(temp.grid[i][z]);
+					}	
+					
+					//Removes spaces
+					int l = list.size();
+					for(int z = 0; z<l; z++)
+					{
+						if(list.get(z).intValue() == 0)
+						{
+							list.remove(z);
+							z=-1;
+							l=list.size();
+						}
+					}
+					
+					//Scans for doubling numbers
+					for(int e = 0; e < list.size()-1; e++)
+					{
+						int value = list.get(e).intValue();
+						if(value == list.get(e+1).intValue())
+						{
+							list.remove(e+1);
+							list.set(e, new Integer(value * 2));
+						}
+					}
+						
+					//Checks if list size is 4, if not, makes 4	
+					if(list.size()<4)
+					{
+						//Finds out how many spaces are empty
+						int empty = 4 - list.size();
+						
+						//Adds amount of empty spaces 0 in list
+						for(int h = 0; h<empty ; h++)
+							list.add(new Integer(0));
+					}
+						
+					
+					//Initialises temp array for parsing in *Table temp*
+					int[] intArray = new int[4];
+					
+					//Iterates through list and makes array
+					for(int z = 0; z<4; z++)
+					{
+						intArray[z] = list.get(3-z);
+					}
+
+					//Parses line array to temp.grid[]
+					temp.grid[i] = intArray;
+				}
+				
+				//Checks if grid has changed
+				if(tString.equals(temp.toString()))
+				{
+					
+					//GameOver check
+					koCheck();
+				
+				}else{
+					
+				
+				Gui.parseGrid(temp);
+				Spawn();
+				}
+	}
+	
+	public static void Down() throws IOException
+	{
+		//Puts current grid array to temp one
+				temp = Gui.getGrid();
+
+				//toString method for later checking if grid has changed
+				String tString = Gui.numberGrid.toString();
+				
+				
+				//iterates through 4 lines of grid
+				for(int i = 0; i<4; i++)
+				{
+					//Refreshes List
+					list = new ArrayList<Integer>();
+					
+					//Parse line of numbers to list
+					for(int z = 0; z<4; z++)
+					{
+						list.add(temp.grid[z][i]);
+					}	
+					
+					//Removes spaces
+					int l = list.size();
+					for(int z = 0; z<l; z++)
+					{
+						if(list.get(z).intValue() == 0)
+						{
+							list.remove(z);
+							z=-1;
+							l=list.size();
+						}
+					}
+					
+					//Scans for doubling numbers
+					for(int e = 0; e < list.size()-1; e++)
+					{
+						int value = list.get(e).intValue();
+						if(value == list.get(e+1).intValue())
+						{
+							list.remove(e+1);
+							list.set(e, new Integer(value * 2));
+						}
+					}
+						
+					//Checks if list size is 4, if not, makes 4	
+					if(list.size()<4)
+					{
+						//Finds out how many spaces are empty
+						int empty = 4 - list.size();
+						
+						//Adds amount of empty spaces 0 in list
+						for(int h = 0; h<empty ; h++)
+							list.add(new Integer(0));
+					}
+						
+					
+					//Initialises temp array for parsing in *Table temp*
+					int[] intArray = new int[4];
+					
+					//Iterates through list and makes array
+					for(int z = 0; z<4; z++)
+					{
+						intArray[z] = list.get(3-z);
+					}
+					
+
+					
+				}
+				
+				//Checks if grid has changed
+				if(tString.equals(temp.toString()))
+				{
+					
+					//GameOver check
+					koCheck();
+				
+				}else{
+					
+				
+				Gui.parseGrid(temp);
+				Spawn();
+				}
+	}
+	
+	public static void Up() throws IOException
+	{
+		//Puts current grid array to temp one
+				temp = Gui.getGrid();
+
+				//toString method for later checking if grid has changed
+				String tString = Gui.numberGrid.toString();
+				
+				
+				
+				//iterates through 4 lines of grid
+				for(int i = 0; i<4; i++)
+				{
+					//Refreshes List
+					list = new ArrayList<Integer>();
+					
+					for(int y = 0; y<4; y++)
+					{
+						for(int x = 0; x<4; x++)
+						{
+							System.out.print(temp.grid[y][x]);
+						}
+						System.out.println();
+					}
+					System.out.println();
+					//Parse line of numbers to list
+					for(int z = 0; z<4; z++)
+					{
+						list.add(temp.grid[z][i]);
+						
+					}	
+					
+					//Removes spaces
+					int l = list.size();
+					for(int z = 0; z<l; z++)
+					{
+						if(list.get(z).intValue() == 0)
+						{
+							list.remove(z);
+							z=-1;
+							l=list.size();
+						}
+					}
+
+					//Scans for doubling numbers
+					for(int e = 0; e < list.size()-1; e++)
+					{
+						int value = list.get(e).intValue();
+						if(value == list.get(e+1).intValue() && value != 0)
+						{
+							list.remove(e+1);
+							list.set(e, new Integer(value * 2));
+						}
+					}
+					//Checks if list size is 4, if not, makes 4	
+					if(list.size()<4)
+					{
+						//Finds out how many spaces are empty
+						int empty = 4 - list.size();
+						
+						//Adds amount of empty spaces 0 in list
+						for(int h = 0; h<empty ; h++)
+							list.add(new Integer(0));
+					}
+					
+					//Initialises temp array for parsing in *Table temp*
+					int[] intArray = new int[4];
+					
+					//Iterates through list and makes array
+					for(int z = 0; z<4; z++)
+					{
+						intArray[z] = list.get(z);
+					}
+					
+					//Parses line array to temp.grid[]
+					temp.grid[i] = intArray;
+				}
+				
+				//Checks if grid has changed
+				if(tString.equals(temp.toString()))
+				{
+					
+					//GameOver check
+					koCheck();
+				
+				}else{
+					
+				
+				Gui.parseGrid(temp);
+				Spawn();
+				}
+	}
+	
+	private static void koCheck()
+	{
+		System.out.println("KoCheck!");
+		
+		for(int z = 0; z < 4; z++)
+		{
+			for(int f = 0; f < 4; f++)
+			{
+			if(Gui.numberGrid.grid[z][f] == 0)
+				{
+					Gui.calcColors();
+					return; //Jeigu randa laisva vieta ne game over
+				}
+				
+			}
+		}
+		
+		boolean gameOver = false;
+		
+		for(int j = 0; j<4; j++)
+		{
+			for(int z = 0; z<3; z++)
+			{
+				if(Gui.numberGrid.grid[j][z] == Gui.numberGrid.grid[j][z+1])
+				{
+					return;
+				}else{
+					gameOver = true;
+				}
+			}
+		}
+		
+		for(int j = 0; j<4; j++)
+		{
+			for(int z = 0; z<3; z++)
+			{
+				if(Gui.numberGrid.grid[z][j] == Gui.numberGrid.grid[z+1][j])
+				{
+					return;
+				}else{
+					gameOver = true;
+				}
+			}
+		}
+		
+		if(gameOver) Gui.GameOver();
+		
+		Gui.refreshGrid();
+		Gui.calcColors();
+	}
+
+}
+
+
+//Issiaiskinti kodel neveikia algoritmas, use system.out.println()

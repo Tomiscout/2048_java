@@ -1,0 +1,74 @@
+import java.util.Formatter;
+import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+
+
+public class FileManager{
+
+	private static String fName;
+	private static String workDirectory = System.getenv("APPDATA")+"\\Tomiscout\\";
+	int maxScore;
+	
+	@SuppressWarnings("unused")
+	public void loadData(String filename) throws IOException
+	{
+		Path file = Paths.get(workDirectory+fName);
+		byte[] fileArray;
+		fileArray = Files.readAllBytes(file);
+		
+		Gui.setMaxScore(Integer.parseInt(fileArray.toString()));
+	}
+	
+	public void writeData(int x)
+	{
+	
+    }
+	
+	
+	public static void createFile(String dir, String name)
+	{	
+		//Creates folder
+		 File theDir = new File(dir);
+
+		  // if the directory does not exist, create it
+		  if (!theDir.exists()) {
+		    System.out.println("creating directory: " + dir);
+		    boolean result = false;
+
+		    try{
+		        theDir.mkdir();
+		        result = true;
+		     } catch(SecurityException se){
+		        se.printStackTrace();
+		     }        
+		     if(result) {    
+		       System.out.println("DIR created");  
+		     }
+		  }
+		
+		
+		//Creates .txt file
+		try {
+			 
+		      File file = new File(dir+name);
+	 
+		      if (file.createNewFile()){
+		        System.out.println("File is created!");
+		      }else{
+		        System.out.println("File already exists.");
+		      }
+	 
+	    	} catch (IOException e) {
+		      e.printStackTrace();
+		}
+	
+	}
+}
+//http://www.kosbie.net/cmu/fall-08/15-100/handouts/notes-scanner-methods-and-console-ui.html

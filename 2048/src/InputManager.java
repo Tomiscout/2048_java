@@ -1,0 +1,64 @@
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+
+import javax.swing.AbstractAction;
+
+
+@SuppressWarnings("serial")
+public class InputManager extends AbstractAction{
+
+private String cmd;
+
+public InputManager(String cmd){
+	this.cmd = cmd;
+}
+	
+	@Override
+	public void actionPerformed(ActionEvent e){
+		//Left arrow
+		if(cmd.equalsIgnoreCase("LeftArrow"))
+		{
+			try {
+				GameCore.Left();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		//Right arrow
+		else if(cmd.equalsIgnoreCase("RightArrow"))
+		{
+			try {
+				GameCore.Right();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+				
+		//Up arrow
+		else if(cmd.equalsIgnoreCase("UpArrow"))
+		{
+			try {
+				GameCore.Up();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+				
+		//Down arrow
+		else if(cmd.equalsIgnoreCase("DownArrow"))
+		{
+			try {
+				GameCore.Down();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
+		
+		else if(cmd.equalsIgnoreCase("Space"))
+		{
+		}
+		
+	}
+
+}

@@ -1,0 +1,51 @@
+import java.awt.Font;
+import javax.swing.JLabel;
+
+
+public class Table {
+	
+	public int[][] grid;
+	public Table()
+	{
+		grid = new JLabel[4][4];
+		
+		for(int z = 0; z<4; z++)
+		{
+			for(int c = 0; c<4; c++)
+			{
+				JLabel el = new JLabel("",JLabel.CENTER);
+				el.setOpaque(true);
+
+				el.setFont(new Font("Serif", Font.PLAIN, 32));
+				grid[z][c] = el;
+			}
+		}
+		
+	}
+
+
+	public boolean equals(Object other){
+		if(other == this) return true;
+		if(other == null) return false;
+		if(getClass() != other.getClass()) return false;
+		if(this.hashCode() == other.hashCode()) return true;
+		
+		return false;
+	}
+
+	
+	public String toString()
+	{
+		String s = "";
+		
+		for(int q = 0; q < 4; q++)
+		{
+			for(int w = 0; w < 4; w++)
+			{
+				s += "-" + grid[q][w].getText();
+			}
+		}
+		return s;
+	}
+}
+

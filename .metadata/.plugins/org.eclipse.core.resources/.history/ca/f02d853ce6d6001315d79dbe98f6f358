@@ -1,0 +1,14 @@
+import java.io.IOException;
+
+
+
+public class Main {
+
+	public static void main(String[] args) throws IOException
+	{
+		int width = 400, height = 600;
+		
+		Lister lister = new Lister(width, height);
+
+	}
+}

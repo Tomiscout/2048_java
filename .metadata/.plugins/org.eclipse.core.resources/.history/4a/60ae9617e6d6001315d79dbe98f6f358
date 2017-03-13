@@ -1,0 +1,23 @@
+import java.awt.FlowLayout;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import net.miginfocom.swing.MigLayout;
+
+
+public class Gui extends JFrame{
+	JPanel score = new JPanel();
+	JPanel game = new JPanel();
+	
+	public Gui()
+	{
+		super("2048: Tomelis edition");
+		
+		score.setLayout(new MigLayout("wrap"));
+		game.setLayout(new MigLayout("debug, wrap", "[][][][]"));
+		
+		
+	}
+
+}

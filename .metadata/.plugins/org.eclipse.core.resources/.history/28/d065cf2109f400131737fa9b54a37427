@@ -1,0 +1,299 @@
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+
+import javax.swing.ActionMap;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.InputMap;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.KeyStroke;
+
+import net.miginfocom.swing.MigLayout;
+
+
+@SuppressWarnings("serial")
+public class Gui extends JFrame{
+	JPanel main = new JPanel();
+	JPanel scoring = new JPanel();
+	static JPanel game = new JPanel();
+	static JPanel go = new JPanel(); //Game over panel
+	
+	static FileManager fm;
+	
+	private static int scoreN = 0;
+	private static int maxScoreN = 0;
+	
+	private ImageIcon icon = new ImageIcon(this.getClass().getResource("img/arrow.gif"));
+	
+	private JLabel scoreL = new JLabel("Score: ");
+	private static JLabel score = new JLabel(""+scoreN);
+	private JLabel maxL = new JLabel("Max score: ");
+	private static JLabel max = new JLabel(""+maxScoreN);
+	private JLabel goImgLabel = new JLabel("");	
+	
+	static private JLabel[][] gameGrid = new JLabel[4][4];
+	public static Table numberGrid = new Table();
+	
+	private JButton refresh = new JButton("New Game");
+	
+	//Colors
+	static Color back = new Color(201,255,255);
+	static Color low = new Color(149,230,117);
+	static Color eight = new Color(0,255,50);
+	static Color sixteen = new Color(7,122,76);
+	static Color thirtytwo = new Color(13,186,209);
+	static Color sixtyfour = new Color(111,0,220);
+	static Color hundred = new Color(28,69,200);
+	static Color twohundred = new Color(126,69,209);
+	static Color fivehundred = new Color(209,69,209);
+	static Color thousand = new Color(255,101,189);
+	static Color twothousand = new Color(255,0,0);
+	static Color fourthousand = new Color(255,255,0);
+	static Color above = new Color(255,106,0);
+	
+	public Gui() throws IOException
+	{
+		super("2048: Tomelis edition");
+				
+		setResizable(false);
+		
+		InputMap im = main.getInputMap(JPanel.WHEN_IN_FOCUSED_WINDOW);
+		ActionMap am = main.getActionMap();		
+		
+		//input keys
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "RightArrow");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "LeftArrow");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_UP, 0), "UpArrow");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_DOWN, 0), "DownArrow");
+		im.put(KeyStroke.getKeyStroke(KeyEvent.VK_SPACE, 0), "Space");
+		//action keys
+		am.put("RightArrow", new InputManager("RightArrow"));
+		am.put("LeftArrow", new InputManager("LeftArrow"));
+		am.put("UpArrow", new InputManager("UpArrow"));
+		am.put("DownArrow", new InputManager("DownArrow"));
+		am.put("Space", new InputManager("Space"));
+		
+		
+		main.setLayout(new MigLayout("wrap", "[grow 30,fill]", "[][grow,fill][]"));
+		scoring.setLayout(new MigLayout("wrap 2"));
+		game.setLayout(new GridLayout(4,4));
+		game.setBorder(BorderFactory.createStrokeBorder(new BasicStroke()));
+		
+		
+		go.setLayout(new MigLayout("wrap", "[grow,fill,center]"));
+		go.add(new JLabel("Game Over m8",JLabel.CENTER), "north");
+		goImgLabel.setIcon(icon);
+		go.add(goImgLabel);
+		
+		for(int z = 0; z<4; z++)
+		{
+			for(int c = 0; c<4; c++)
+			{
+				gameGrid[z][c] = new JLabel(numberGrid.grid[z][c]+"" ,JLabel.CENTER);
+				gameGrid[z][c].setOpaque(true);
+				gameGrid[z][c].setFont(new Font("Serif", Font.PLAIN, 32));
+				gameGrid[z][c].setBorder(BorderFactory.createEtchedBorder());
+				game.add(gameGrid[z][c]);
+			}
+		}
+		
+		scoring.add(scoreL);
+		scoring.add(score);
+		scoring.add(maxL);
+		scoring.add(max);
+		
+		main.add(scoring);
+		main.add(game);
+		main.add(refresh);
+		add(main);
+		GameCore.Spawn();
+		
+		fm = new FileManager();
+		fm.loadData();
+		
+		refresh.addActionListener(new ActionListener() {
+	        public void actionPerformed(ActionEvent e) {
+	           NewGrid();
+	        }          
+	     });
+		
+	}
+	
+
+	void setScore(String s)
+	{
+		score.setText(s);
+	}
+	
+	void setMax(String s)
+	{
+		max.setText(s);
+	}
+	
+	static public Table getGrid() { return numberGrid; }
+	
+	static public void refreshGrid()
+	{
+		System.out.println("Refreshing grid");
+		for(int v = 0; v<4; v++)
+		{
+			for(int k = 0; k<4; k++)
+			{
+				if(numberGrid.grid[v][k] == 0)
+					gameGrid[v][k].setText("");
+				else
+					gameGrid[v][k].setText(numberGrid.grid[v][k]+"");
+			}
+		}
+	}
+	
+	static public void parseGrid(Table x)
+	{
+		numberGrid = x;
+		refreshGrid();
+	}
+	
+	static public void calcColors()
+	{
+		
+		
+		for(int i = 0; i<4; i++)
+		{
+			for(int y = 0; y<4; y++)
+			{
+				
+				if(numberGrid.grid[y][i] == 0)
+				{
+					gameGrid[y][i].setBackground(back);
+					continue;
+				}
+					
+				
+				int u = numberGrid.grid[y][i];
+				
+				if(u == 2 || u == 4)
+				{
+					gameGrid[y][i].setBackground(low);
+					continue;
+				}
+				
+				if(u == 8)
+				{
+					gameGrid[y][i].setBackground(eight);
+					continue;
+				}
+				
+				if(u == 16)
+				{
+					gameGrid[y][i].setBackground(sixteen);
+					continue;
+				}
+				
+				if(u == 32)
+				{
+					gameGrid[y][i].setBackground(thirtytwo);
+					continue;
+				}
+				
+				if(u == 64)
+				{
+					gameGrid[y][i].setBackground(sixtyfour);
+					continue;
+				}
+				
+				if(u == 128)
+				{
+					gameGrid[y][i].setBackground(hundred);
+					continue;
+				}
+				
+				if(u == 256)
+				{
+					gameGrid[y][i].setBackground(twohundred);
+					continue;
+				}
+				
+				if(u == 512)
+				{
+					gameGrid[y][i].setBackground(fivehundred);
+					continue;
+				}
+				
+				if(u == 1024)
+				{
+					gameGrid[y][i].setBackground(thousand);
+					continue;
+				}
+				
+				if(u == 2048)
+				{
+					gameGrid[y][i].setBackground(twothousand);
+					continue;
+				}
+				
+				if(u == 4096)
+				{
+					gameGrid[y][i].setBackground(fourthousand);
+					continue;
+				}
+				
+				if(u > 4096)
+					gameGrid[y][i].setBackground(above);
+				
+			}
+		}
+	}
+	
+	
+	public static void GameOver()
+	{
+		System.out.println("GAMOEVER");
+		JOptionPane.showMessageDialog(
+				null,
+				go,
+				"U got r8kt",
+				JOptionPane.PLAIN_MESSAGE);
+	}
+	
+	public static void NewGrid()
+	{
+		for(int j = 0; j<4; j++)
+		{
+			for(int z = 0; z<4; z++)
+			{
+				gameGrid[j][z].setText("");
+				numberGrid.grid[j][z] = 0;
+			}
+		}	
+		GameCore.Spawn();
+	}
+	
+	public static void addScore(int x) throws IOException
+	{
+		scoreN += x;
+		score.setText(""+scoreN);
+		if(scoreN > maxScoreN)
+			setMaxScore(scoreN);
+	}
+	
+	public static void setMaxScore(int x) throws IOException
+	{
+		maxScoreN = x;
+		max.setText(""+maxScoreN);
+		fm.writeData(maxScoreN);
+	}
+	
+}
+
+
+
